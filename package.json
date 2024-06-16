@@ -1,0 +1,18 @@
+{
+  "name": "webcrawler",
+  "version": "1.0.0",
+  "description": "a js program that scrapes websites",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+  },
+  "jest": {
+  "transform": {}
+  },
+  "author": "Greeshmanth",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
