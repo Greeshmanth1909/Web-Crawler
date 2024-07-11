@@ -1,6 +1,7 @@
 import { crawlPage } from './crawl.js'
+import { reportResults } from './report.js'
 
-function main() {
+async function main() {
     if (process.argv.length <= 2) {
         console.error('Not enough arguments, quitting');
         return;
@@ -11,10 +12,8 @@ function main() {
     // Valid arguments received, starting scraping
     const url = process.argv[2];
     console.log(`Scraping with ${url} as base URL`);
-    
-    crawlPage(url);
-    
-
+    const k = await crawlPage(url, url, {});
+    reportResults(k);
 }
 
 main();

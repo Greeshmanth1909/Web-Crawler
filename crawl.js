@@ -17,8 +17,6 @@ function getURLsFromHTML(htmlBody, baseURL) {
     let absoluteAnchors = [];
     anchors.forEach((anchor) => {
         const matchArr = anchor.getAttribute('href');
-        console.log('============================')
-        console.log(matchArr);
         if (matchArr.startsWith('http://') || matchArr.startsWith('https://')) {
             absoluteAnchors.push(anchor.getAttribute('href'));
         } else {
@@ -27,10 +25,16 @@ function getURLsFromHTML(htmlBody, baseURL) {
         
     });
     return absoluteAnchors;
-
 }
 
-async function crawlPage(currentURL) {
+async function crawlPage(baseURL, currentURL = '', pages = {}) {
+
+    if (!(currentURL.startsWith(baseURL))) {
+        return;
+    };
+
+    if (currentURL === '') {const response = await fetch(baseURL)};
+
     const response = await fetch(currentURL);
     const statusCode = response.status;
 
@@ -44,7 +48,27 @@ async function crawlPage(currentURL) {
         console.log('Error: content type not html or text, quitting..');
         return;
     }
-    console.log(await response.text())
+    const html = await response.text();
+    const hrefArr = getURLsFromHTML(html, baseURL);
+
+    if (hrefArr.length === 0) {
+        return;
+    };
+    // Iterate through array and update pages
+    hrefArr.forEach((val) => {
+        const normalizedURL = normalizeURL(val);
+        if (normalizedURL in pages) {
+            pages[normalizedURL] += 1;
+            return;
+        } else {
+            pages[normalizedURL] = 1;
+        };
+        
+        // Visit page and update pages
+        crawlPage(baseURL, val, pages);
+    });
+
+    return pages;
 }
 export { normalizeURL,
          getURLsFromHTML,
